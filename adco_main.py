@@ -1,31 +1,10 @@
-# from adco_crawler import crawler
-# from adco_model import model 
+from adco_crawler import crawler
+from adco_model import model 
 
 # 1. 네이버 블로그 링크 입력
 # 2. 크롤러에 입력, 크롤러가 본문 내용 반환
 # 3. 본문 내용을 광고 판정 모델에 입력, 광고 확률 및 인자들 반환
 # 4. 시각화 및 설명
-
-def crawler(url : str) -> tuple[str]: # 임시 함수
-    # 작성자 : 이휘민
-    # 입력 : str, 네이버 블로그 url
-    # 내부 동작 : 네이버 블로그 본문과 블로그 이름만을 추출한다. 이미지가 총 몇개 사용되었는지도 계산
-    # 출력 : tuple, (본문 내용 : str, 블로그 이름 : str)
-
-    return "None" # test value
-
-def adco_model(text : str) -> tuple[float]:
-    # 작성자: 정윤수, 이유찬
-    # 입력 : str, 추출한 본문 내용
-    # 내부 동작 : 본문을 미리 학습시킨 모델에 입력해 칭찬 비율, 비판 비율, 가이드라인 유사도를 얻고, 이를 다른 모델에 넣어 광고 확률을 구한다.
-    # 출력 : tuple, (광고 확률 : float, 칭찬 비율 : float, 비판 비율 : float, 가이드라인 유사도 : float)
-    # 기타 : 모델 학습은 다른 함수에서 진행, 해당 함수는 학습 완료된 모델을 사용
-    prob : float # 광고 확률
-    comp : float # 칭찬 비율
-    crit : float # 비판 비율
-    sim : float # 가이드라인 유사도
-
-    return 0.2 , 0.1, 0.0, 0.3 # test value
 
 def main() -> None:
     equal_sign_num = 70 # 쓰잘데기 없음
@@ -58,7 +37,7 @@ def main() -> None:
 
     # 3. 본문 내용을 광고 판정 모델에 입력
     try:
-        prob, comp, crit, sim = adco_model(text)
+        prob, comp, crit, sim = model(text)
     # 예외 처리
     except:
         raise Exception("모델 내부 이슈")
