@@ -27,6 +27,7 @@ def crawler(url : str) -> tuple[str]: # 임시 함수
                 title_div = iframe_soup.find('div', {'class': 'se-module se-module-text se-title-text'})
                 title = title_div.get_text(strip=True)
                 if content_div:
+                    #전체 내용 (후에 필요 정보만 추출)
                     content = content_div.get_text(strip=True)
                 else:
                     content = '내용을 가져올 수 없음'
