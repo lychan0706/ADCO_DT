@@ -15,9 +15,6 @@ def crawler(url : str) -> tuple[str]: # 임시 함수
         
         soup = BeautifulSoup(response.content, 'html.parser')
 
-        # 제목 추출
-        title = soup.find("title")
-
         # 내용 추출 (일단 전체 문장 가져옴, 후에 요약 정리)
         iframe = soup.find('iframe', {'id': 'mainFrame'})
         if iframe and 'src' in iframe.attrs:
@@ -26,6 +23,9 @@ def crawler(url : str) -> tuple[str]: # 임시 함수
             if iframe_response.status_code == 200:
                 iframe_soup = BeautifulSoup(iframe_response.text, 'html.parser')
                 content_div = iframe_soup.find('div', {'class': 'se-main-container'})
+                # 제목 추출
+                title_div = iframe_soup.find('div', {'class': 'se-module se-module-text se-title-text'})
+                title = title_div.get_text(strip=True)
                 if content_div:
                     content = content_div.get_text(strip=True)
                 else:
@@ -47,15 +47,17 @@ def crawler(url : str) -> tuple[str]: # 임시 함수
     except Exception as e:
         print(f"Error: {e}")
         return None
-    # 작성자 : 이휘민
-    # 입력 : str, 네이버 블로그 url
-    # 내부 동작 : 네이버 블로그 본문과 블로그 이름만을 추출한다. 이미지가 총 몇개 사용되었는지도 계산
-    # 출력 : tuple, (본문 내용 : str, 블로그 이름 : str)
 
-    #return "None" # test value
-blog_url = "https://blog.naver.com/qksdnjfgml/223655887934"
+blog_url = "https://blog.naver.com/happymil_0/223599083052"
 result = crawler(blog_url)
 if result:
     print(f"Result: {result}")
 else:
     print("Invalid or unsupported Naver blog URL.")
+
+# 작성자 : 이휘민
+    # 입력 : str, 네이버 블로그 url
+    # 내부 동작 : 네이버 블로그 본문과 블로그 이름만을 추출한다. 이미지가 총 몇개 사용되었는지도 계산
+    # 출력 : tuple, (본문 내용 : str, 블로그 이름 : str)
+
+    #return "None" # test value
