@@ -44,7 +44,7 @@ def main() -> None:
     if (type(prob) != float):
         raise TypeError(f"Invalid Type.\n{type(prob) = }")
     if not (0 < prob < 1):
-        raise ValueError(f"ad_probability Out of Range.\n{prob = }")
+        raise ValueError(f"prob Out of Range.\n{prob = }")
     
     # 4. 시각화 및 설명
     personal_opinion : float = comp + crit
