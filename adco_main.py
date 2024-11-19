@@ -1,5 +1,5 @@
 from adco_crawler import crawler
-from adco_model import model 
+from adco_model import model
 
 # 1. 네이버 블로그 링크 입력
 # 2. 크롤러에 입력, 크롤러가 본문 내용 반환
@@ -44,7 +44,7 @@ def main() -> None:
     if (type(prob) != float):
         raise TypeError(f"Invalid Type.\n{type(prob) = }")
     if not (0 < prob < 1):
-        raise ValueError(f"ad_probability Out of Range.\n{prob = }")
+        raise ValueError(f"prob Out of Range.\n{prob = }")
     
     # 4. 시각화 및 설명
     personal_opinion : float = comp + crit
@@ -76,30 +76,33 @@ def main() -> None:
 
     print(f"광고 확률: {visual_prob}%")
 
-    if (comp_status == -1):
-        print("객관적인 정보가 대부분이며, 개인적 의견이 거의 들어가지 않았어요.")
-    elif (comp_status == 0):
-        print("적절한 비판과 함께 리뷰하고 있어요.")
-    elif (comp_status == 1):
-        print("칭찬 위주로 리뷰하고 있어요.")
-    else:
-        print("과도한 칭찬의 사용으로 광고임이 의심돼요.")
+    match (comp_status):
+        case -1:
+            print("객관적인 정보가 대부분이며, 개인적 의견이 거의 들어가지 않았어요.")
+        case 0:
+            print("적절한 비판과 함께 리뷰하고 있어요.")
+        case 1:
+            print("칭찬 위주로 리뷰하고 있어요.")
+        case 2:
+            print("과도한 칭찬의 사용으로 광고임이 의심돼요.")
 
-    if (comp_status == sim_status):
-        print("그리고 ", end = "")
-    else:
+    if ((comp_status > 0) ^ (sim_status > 0)):
         print("하지만 ", end = "")
-
-    if (sim_status == 0):
-        print("광고에서 주로 보이는 단어가 많이 등장하지 않아요.")
-    elif (sim_status == 1):
-        print("조금씩 부자연스러운 단어가 보여요.")
     else:
-        print("광고에서 주로 나타나는 단어 사용이 많이 발견됐어요.")
+        print("그리고 ", end = "")
+
+    match (sim_status):
+        case 0:
+            print("광고에서 주로 보이는 단어가 많이 등장하지 않아요.")
+        case 1:
+            print("조금씩 부자연스러운 단어가 보여요.")
+        case 2:
+            print("광고에서 주로 나타나는 단어 사용이 많이 발견됐어요.")
 
     print('=' * equal_sign_num)
-
     return None
 
 if (__name__ == "__main__"):
     main()
+
+    #qwe
