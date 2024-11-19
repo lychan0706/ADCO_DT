@@ -1,5 +1,30 @@
 import requests
 from bs4 import BeautifulSoup
+import re
+
+def remove_emojis(text):
+    emoji_pattern = re.compile(
+        "[\U00010000-\U0010FFFF" # 유니코드 이모티콘 범위
+        "\U0001F600-\U0001F64F" # 웃는 얼굴 및 감정
+        "\U0001F300-\U0001F5FF" # 기호 및 픽토그램
+        "\U0001F680-\U0001F6FF" # 교통 및 지도 기호
+        "\U0001F700-\U0001F77F" # 알케미 기호
+        "\U0001F780-\U0001F7FF" # 기타 기호
+        "\U0001F800-\U0001F8FF" # 추가 기호
+        "\U0001F900-\U0001F9FF" # 손동작 및 추가 이모티콘
+        "\U0001FA00-\U0001FAFF" # 도구 및 객체
+        "\U00002702-\U000027B0" # 기호
+        "\U0001F1E6-\U0001F1FF" # 국기
+        "]+",  # 유니코드 이모티콘 범위
+        flags=re.UNICODE,
+    )
+    return emoji_pattern.sub(r"", text)
+
+    #"\U000024C2-\U0001F251"  # 기타
+
+
+def remove_substring(input_string, substring_to_remove):
+    return input_string.replace(substring_to_remove, "")
 
 def crawler(url : str) -> tuple[str]: # 임시 함수
     try:
@@ -26,9 +51,12 @@ def crawler(url : str) -> tuple[str]: # 임시 함수
                 # 제목 추출
                 title_div = iframe_soup.find('div', {'class': 'se-module se-module-text se-title-text'})
                 title = title_div.get_text(strip=True)
+                #title = remove_substring(title_div, "\u200b")
                 if content_div:
                     #전체 내용
-                    content = content_div.get_text(strip=True)
+                    content_div = content_div.get_text(strip=True)
+                    content = remove_substring(content_div, "\u200b")
+                    content = remove_emojis(content)
                 else:
                     content = '내용을 가져올 수 없음'
                 # 이미지 갯수
@@ -42,7 +70,7 @@ def crawler(url : str) -> tuple[str]: # 임시 함수
             image_count = '0'
 
         # tuple로 반환
-        return (title, content, image_count)
+        return (content, title, image_count)
 
 
     except Exception as e:
