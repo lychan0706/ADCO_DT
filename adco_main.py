@@ -27,31 +27,27 @@ def main() -> None:
     text : str
     blogger_name : str
 
-    try:
-        text = crawler(user_url)[0] # text = 본문 내용; unicode
+    text = crawler(user_url)[0] # text = 본문 내용; unicode
+
     # 예외 처리
-    except:
-        raise Exception("크롤러 내부 이슈")
     if (type(text) != str):
         raise TypeError(f"Invalid Type.\n{type(text) = }") # 크롤러가 본문 내용 반환 실패
 
-    # 3. 본문 내용을 광고 판정 모델에 입력
-    try:
-        prob, comp, crit, sim = model(text)
+    # 3. 본문 내용을 광고 판정 모델에 입력\
+    prob, comp, crit, sim = model(text)
+    
     # 예외 처리
-    except:
-        raise Exception("모델 내부 이슈")
     if (type(prob) != float):
         raise TypeError(f"Invalid Type.\n{type(prob) = }")
     if not (0 < prob < 1):
         raise ValueError(f"prob Out of Range.\n{prob = }")
     
     # 4. 시각화 및 설명
-    personal_opinion : float = comp + crit
-    comp_ratio : float = comp / (personal_opinion)
+    subjectivity : float = comp + crit
+    comp_ratio : float = comp / (subjectivity)
     comp_status : int
 
-    if (personal_opinion < 0.2):
+    if (subjectivity < 0.2):
         comp_status = -1
     elif (comp_ratio < 0.7):
         comp_status = 0
@@ -104,5 +100,3 @@ def main() -> None:
 
 if (__name__ == "__main__"):
     main()
-
-    #qwe
