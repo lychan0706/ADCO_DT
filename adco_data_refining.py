@@ -125,32 +125,41 @@ def extract_data(html, file_dir):
     finally:
         # Save the file
         temp = data.split('\n', maxsplit=2)
-        data = temp[0] + '\n' + str(done + total_data_num) + '\n' + temp[2]
+        data = temp[0] + '\n총 ' + str(done + total_data_num) + '개\n' + temp[2]
         data_file.write(data)
 
     data_file.close()
-    
 
-if (__name__ == "__main__"):
-    file_dir = "C:\\Users\\ychn0\\OneDrive\\문서\\MyProgram\\Python\\ADCO\\datas\\review_data.txt"
-    # 파일 생성
-    init_file(file_dir=file_dir)
+def remove_emoji_process(file_dir):
     
-    # id_list = [1301313289]
-    id_list = [1301313289,1213806029,1750052528,1557359092,36357696,1137448595,1932032424,1801968019,1725794491]
-    for id in id_list:
-        # url - 네이버 플레이스
-        url = f'https://m.place.naver.com/restaurant/{id}/review/visitor?entry=ple'
-        # 더보기 존나 누르고 html 저장
-        html = write_html(url, 2, headless = 0)
-
-        # html 저장한거 불러와서 리뷰 추출
-        extract_data(html=html, file_dir=file_dir)
-    
-    # emoji removal process 휘민씨 고마워요
     with open(file_dir, 'r', encoding='UTF-8') as file:
         content = file.read()
 
     with open(file_dir, 'w', encoding='UTF-8') as file:
         content = remove_emojis(content)
         file.write(content)
+    
+def main():
+    file_dir = "datas\\review_data.txt" # csv로 하면 코드 요상해짐, '|'로 나누는 txt 파일 사용
+    # 파일 생성
+    init_file(file_dir=file_dir)
+    
+    # id_list = [1301313289] # test id
+    id_list = [1301313289,1213806029,1750052528,1557359092,36357696,1137448595,1932032424,1801968019,1725794491]
+    max_tries   = 40    # 40 이후로 급격히 느려짐... headless True 하면 빠르긴 한데
+    headless    = False # headless True로 하면 source 이상해짐
+    for id in id_list:
+        url = f'https://m.place.naver.com/restaurant/{id}/review/visitor?entry=ple' # 추천순 정렬
+
+        # 더보기 존나 누르고 html 저장
+        html = write_html(url, max_tries, headless)
+
+        # html 저장한거 불러와서 리뷰 추출
+        extract_data(html=html, file_dir=file_dir)
+    
+    # emoji removal process 휘민씨 고마워요
+    remove_emoji_process(file_dir=file_dir)
+
+if (__name__ == "__main__"):
+    main()
+    # remove_emoji_process("datas\\review_data.txt")
