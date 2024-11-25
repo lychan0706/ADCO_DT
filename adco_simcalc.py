@@ -26,9 +26,9 @@ def main() -> None:
     # 데이터 파일을 2차원 텐서로 변환
     with open('datas\\review_data.txt', 'r', encoding='UTF-8') as file:
         content = file.read()
-    train_data = content.split('\n')[2:-1]
+    train_data = content.split('\n')[3:-1]
     for ite in range(len(train_data)):
-        train_data[ite] = train_data[ite].split('|')
+        train_data[ite] = train_data[ite].split('|')[1]
 
     # 결손 데이터 제거
     print(f"데이터 갯수 : {len(train_data)}")
@@ -36,9 +36,22 @@ def main() -> None:
     train_data.clear()
 
     for ite in range(len(temp)):
-        if temp[ite][1] != '':
+        if temp[ite] != '':
             train_data.append(temp[ite])
     print(f"결손 데이터 제거 후 데이터 갯수 : {len(train_data)}")
+
+    train_data = pd.Series(train_data)
+    print(train_data[:3])
+    train_data = train_data.str.replace("[^ㄱ-ㅎㅏ-ㅣ가-힣 ]","", regex=True)
+    print(train_data[:10])
+
+    # 불용어 정의
+    stopwords = ['의','가','이','은','들','는','좀','잘','걍','과','도','를','으로','자','에','와','한','하다']
+
+    # 형태소 분석기 OKT를 사용한 토큰화 작업 (다소 시간 소요)
+    okt = Okt()
+    
+
 
 if (__name__ == "__main__"):
     main()
