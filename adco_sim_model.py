@@ -1,10 +1,10 @@
 from gensim.models.word2vec import Word2Vec
-from konlpy.tag import Okt
+from konlpy.tag import Mecab
 import pandas as pd
 
 sim_model = Word2Vec.load("datas\\w2v_model.bin")
 
-def calc_sim(text : str) -> float:
+def sim_model(text : str) -> float:
     model = sim_model
     sim : float
     return sim
@@ -21,7 +21,7 @@ def remove_spaces():
 
 def main() -> None:
     content : str = ''
-    sim : float = calc_sim(text = content)
+    sim : float = sim_model(text = content)
     print(sim)
 
 def test():
