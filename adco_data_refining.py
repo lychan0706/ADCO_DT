@@ -145,7 +145,8 @@ def main():
     init_file(file_dir=file_dir)
     
     # id_list = [1301313289] # test id
-    id_list = [1301313289,1213806029,1750052528,1557359092,36357696,1137448595,1932032424,1801968019,1725794491]
+    # id_list = [1301313289,1213806029,1750052528,1557359092,36357696,1137448595,1932032424,1801968019,1725794491] # done
+    id_list = [30820508]
     max_tries   = 40    # 40 이후로 급격히 느려짐... headless True 하면 빠르긴 한데
     headless    = False # headless True로 하면 source 이상해짐
     for id in id_list:
