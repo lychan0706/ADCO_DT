@@ -1,6 +1,9 @@
 import requests
 from bs4 import BeautifulSoup
 import re
+from pykospacing import Spacing
+
+spacing = Spacing()
 
 def remove_emojis(text):
     emoji_pattern = re.compile(
@@ -43,23 +46,22 @@ def filter_allowed_characters(text):
     allowed_pattern = re.compile(r"[^a-zA-Z0-9ㄱ-ㅎ가-힣\s!@#$%^&*()\-_=+\[\]{};:'\",.<>/?\\|`~]")
     return allowed_pattern.sub(" ", text)
 
-def fix_spacing(text):
+#def fix_spacing(text):
     # 1. 문장부호 뒤에 공백 추가
-    text = re.sub(r"([.,!?])(?=\S)", r"\1 ", text)
+    #text = re.sub(r"([.,!?])(?=\S)", r"\1 ", text)
 
     # 2. 숫자와 문자 사이에 공백 추가
-    text = re.sub(r"(\d)([가-힣a-zA-Z])", r"\1 \2", text)
-    text = re.sub(r"([가-힣a-zA-Z])(\d)", r"\1 \2", text)
+    #text = re.sub(r"(\d)([가-힣a-zA-Z])", r"\1 \2", text)
+    #text = re.sub(r"([가-힣a-zA-Z])(\d)", r"\1 \2", text)
 
     # 3. 영어 단어와 한글 사이에 공백 추가
-    text = re.sub(r"([a-zA-Z])([가-힣])", r"\1 \2", text)
-    text = re.sub(r"([가-힣])([a-zA-Z])", r"\1 \2", text)
+    #text = re.sub(r"([a-zA-Z])([가-힣])", r"\1 \2", text)
+    #text = re.sub(r"([가-힣])([a-zA-Z])", r"\1 \2", text)
 
     # 4. 연속된 공백을 하나로 줄임
-    text = re.sub(r"\s+", " ", text).strip()
+    #text = re.sub(r"\s+", " ", text).strip()
 
-    return text
-
+    #return text
 
 def remove_substring(input_string, substring_to_remove):
     return input_string.replace(substring_to_remove, " ")
@@ -95,11 +97,12 @@ def crawler(url : str) -> tuple[str]: # 임시 함수
                     content_div = content_div.get_text(strip=True)
                     content_div = remove_substring(content_div, "\u200b")
                     content_div = filter_allowed_characters(content_div)
-                    content_div = fix_spacing(content_div)
+                    #content_div = fix_spacing(content_div)
+                    content_div_text = spacing(content_div)
                     #for i in range(0, len(content_div)):
                     #    if (content_div[i:i+2] == "  "):
                     #        content_div = content_div[:i+1] + content_div[i+2:]
-                    content = content_div
+                    content = content_div_text
                 else:
                     content = '내용을 가져올 수 없음'
                 # 이미지 갯수
