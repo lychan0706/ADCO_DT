@@ -36,6 +36,7 @@ def main() -> None:
         raise TypeError(f"Invalid Type.\n{type(text) = }") # 크롤러가 본문 내용 반환 실패
 
     # 3. 본문 내용을 광고 판정 모델에 입력
+    # 수정 사항 : comp crit x -> 감정 점수, 주관성 점수 
     comp, crit = cc_model(text)
     sim = sim_model(text)
 

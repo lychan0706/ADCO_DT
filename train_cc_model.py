@@ -1,15 +1,13 @@
 from googletrans import Translator
 from textblob import TextBlob
 from nltk.tokenize import sent_tokenize
-
-text=("튀김류 코너도 있고, 탄산음료랑 아이스크림도 먹을 수 있어서 웬만한 뷔페 부럽지 않죠. 튀김 중에서는 닭가슴살 튀김이 특히 맛있습니다. 처음에는 이게 탕수육인가 싶었는데 알아보니 닭가슴살 튀김이더라고요.")
+import nltk
 
 def analyze_sentiment_and_subjectivity(text):
-
     translator = Translator()
 
     translated_text = translator.translate(text, src="ko", dest="en").text
-
+    nltk.download('punkt_tab')
     sentences = sent_tokenize(translated_text)
 
     sentiments = []
@@ -28,3 +26,7 @@ def analyze_sentiment_and_subjectivity(text):
     print(f"평균 Sentiment (감정 점수): {avg_sentiment:.2f}")
     print(f"평균 Subjectivity (주관성 점수): {avg_subjectivity:.2f}")
     return avg_sentiment, avg_subjectivity
+
+if (__name__ == "__main__"):
+    text=("튀김류 코너도 있고, 탄산음료랑 아이 스크림도 먹을 수 있어서 웬만한 뷔페 부럽지 않죠. 튀김 중에서는 닭가슴살 튀김이 특히 맛있습니다. 처음에는 이게 탕수육인가 싶었는데 알아보니 닭가슴살 튀김이더라고요.")
+    analyze_sentiment_and_subjectivity(text)
