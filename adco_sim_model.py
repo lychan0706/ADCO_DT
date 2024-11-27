@@ -1,5 +1,4 @@
 from gensim.models.word2vec import Word2Vec
-from konlpy.tag import Mecab
 import pandas as pd
 
 sim_model = Word2Vec.load("datas\\w2v_model.bin")

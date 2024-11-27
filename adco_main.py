@@ -1,5 +1,5 @@
 from adco_crawler import crawler
-from ADCO.adco_cc_model import cc_model
+from adco_cc_model import cc_model
 from adco_sim_model import sim_model
 from adco_prob_model import prob_model
 
@@ -35,11 +35,11 @@ def main() -> None:
     if (type(text) != str):
         raise TypeError(f"Invalid Type.\n{type(text) = }") # 크롤러가 본문 내용 반환 실패
 
-    # 3. 본문 내용을 광고 판정 모델에 입력\
+    # 3. 본문 내용을 광고 판정 모델에 입력
     comp, crit = cc_model(text)
     sim = sim_model(text)
 
-    prob = prob_model(text)
+    prob = prob_model(comp, crit, sim)
     
     # 예외 처리
     if (type(prob) != float):
