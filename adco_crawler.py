@@ -1,10 +1,12 @@
+from time import time
+start = time()
 import requests
 from bs4 import BeautifulSoup
 import re
-from pykospacing import Spacing
-from transformers import pipeline
-
-spacing = Spacing()
+# from pykospacing import Spacing
+# spacing = Spacing()
+# from transformers import pipeline
+print(f"[adco_crawler] importing completed : {time() - start:.2} sec")
 
 def remove_emojis(text):
     emoji_pattern = re.compile(
@@ -87,10 +89,12 @@ def remove_substring(input_string, substring_to_remove):
     return input_string.replace(substring_to_remove, " ")
 
 def crawler(url : str) -> tuple[str]: # 임시 함수
+    start = time() # debug
     try:
         # URL 확인
-        if "blog.naver.com" not in url:
-            return None
+        # if "blog.naver.com" not in url:
+        #     return None
+        # 이중 디버깅이라 주석 처리
         
         # HTML 가져오기
         response = requests.get(url)
@@ -99,54 +103,72 @@ def crawler(url : str) -> tuple[str]: # 임시 함수
             return None
         
         soup = BeautifulSoup(response.content, 'html.parser')
+        print(f"[adco_crawler] getting HTML completed : {time() - start:.2} sec")
+        start = time()
 
         # 내용 추출
+        
+        # 예외 처리 1
         iframe = soup.find('iframe', {'id': 'mainFrame'})
-        if iframe and 'src' in iframe.attrs:
-            iframe_url = "https://blog.naver.com" + iframe['src']
-            iframe_response = requests.get(iframe_url)
-            if iframe_response.status_code == 200:
-                iframe_soup = BeautifulSoup(iframe_response.text, 'html.parser')
-                content_div = iframe_soup.find('div', {'class': 'se-main-container'})
-                # 제목 추출
-                title_div = iframe_soup.find('div', {'class': 'se-module se-module-text se-title-text'})
-                title = title_div.get_text(strip=True)
-                #title = remove_substring(title_div, "\u200b")
-                if content_div:
-                    #전체 내용
-                    content_div = content_div.get_text(strip=True)
-                    content_div = remove_substring(content_div, "\u200b")
-                    content_div = filter_allowed_characters(content_div)
-                    content_div = fix_spacing(content_div)
-                    #content_div_text = spacing(content_div)
-                    #for i in range(0, len(content_div)):
-                    #    if (content_div[i:i+2] == "  "):
-                    #        content_div = content_div[:i+1] + content_div[i+2:]
-                    content = content_div
-                else:
-                    content = '내용을 가져올 수 없음'
-                # 이미지 갯수
-                #images = iframe_soup.find_all('img')
-                #classifier = pipeline("image-classification", model="google/vit-base-patch16-224")
-                #food_image_count = classify_food_images(images, classifier)
-                images = iframe_soup.find_all('img')
-                food_image_count = str(len(images))
-            else:
-                content = '내용을 가져올 수 없음'
-                food_image_count = '0'
-        else:
-            content = '내용을 가져올 수 없음'
-            food_image_count = '0'
+        if not (iframe and 'src' in iframe.attrs):
+            return None
+        print(f"[adco_crawler] exception handling 1 completed : {time() - start:.2} sec")
+        start = time()
+        
+        # 예외 처리 2
+        iframe_url = "https://blog.naver.com" + iframe['src']
+        iframe_response = requests.get(iframe_url)
+        if not (iframe_response.status_code == 200):
+            return None
+        print(f"[adco_crawler] exception handling 2 completed : {time() - start:.2} sec")
+        start = time()
+        
+        # 제목 추출
+        iframe_soup = BeautifulSoup(iframe_response.text, 'html.parser')
+        content_div = iframe_soup.find('div', {'class': 'se-main-container'})
+        title_div = iframe_soup.find('div', {'class': 'se-module se-module-text se-title-text'})
+        title = title_div.get_text(strip=True)
+        # title = remove_substring(title_div, "\u200b")
+        print(f"[adco_crawler] extracting title completed : {time() - start:.2} sec")
+        start = time()
+
+        # 예외 처리 3
+        if not content_div:
+            return None
+        print(f"[adco_crawler] exception handling 3 completed : {time() - start:.2} sec")
+        start = time()
+        
+        #전체 내용
+        content_div = content_div.get_text(strip=True)
+        content_div = remove_substring(content_div, "\u200b")
+        content_div = filter_allowed_characters(content_div)
+        content_div = fix_spacing(content_div)
+        #content_div_text = spacing(content_div)
+        #for i in range(0, len(content_div)):
+        #    if (content_div[i:i+2] == "  "):
+        #        content_div = content_div[:i+1] + content_div[i+2:]
+        content = content_div
+        print(f"[adco_crawler] extracting text completed : {time() - start:.2} sec")
+        start = time()
+
+        # 이미지 갯수
+        #images = iframe_soup.find_all('img')
+        #classifier = pipeline("image-classification", model="google/vit-base-patch16-224")
+        #food_image_count = classify_food_images(images, classifier)
+        images = iframe_soup.find_all('img')
+        food_image_count = str(len(images))
+        print(f"[adco_crawler] counting images completed : {time() - start:.2} sec")
+        start = time()
 
         # tuple로 반환
         return (content, title, food_image_count)
-
-
+    
     except Exception as e:
         print(f"Error: {e}")
         return None
 
 if (__name__ == "__main__"):
+    
     blog_url = "https://blog.naver.com/cherry_27_/223665563506"
     result = crawler(blog_url)
     if result:
